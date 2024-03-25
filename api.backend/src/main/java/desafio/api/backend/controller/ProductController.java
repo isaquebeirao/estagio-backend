@@ -28,4 +28,9 @@ public class ProductController {
         return productService.listProduct();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity selectProduct(@PathVariable Long id) {
+        return productService.selectProduct(id);
+    }
+
 }
