@@ -12,10 +12,12 @@ import com.mercadopago.resources.preference.Preference;
 import desafio.api.backend.model.Product;
 
 import desafio.api.backend.model.dto.ListProductDTO;
+import desafio.api.backend.model.dto.PaymentUrlDTO;
 import desafio.api.backend.model.dto.RegisterProductDTO;
 import desafio.api.backend.model.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +31,8 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    private String accessToken = "TEST-541507545787873-031914-a3793c01159e354d630ef803a327fac8-1733277623";
+    @Value("${mercadopago.token}")
+    private String accessToken;
 
     public ResponseEntity createProduct (RegisterProductDTO product) {
         productRepository.save(new Product(product));
@@ -74,7 +77,9 @@ public class ProductService {
 
             String paymentUrl = preference.getInitPoint();
 
-            return ResponseEntity.ok(paymentUrl);
+            PaymentUrlDTO response = new PaymentUrlDTO(paymentUrl);
+
+            return ResponseEntity.ok(response);
         } catch (MPException e) {
             throw new RuntimeException(e);
         } catch (MPApiException e) {
